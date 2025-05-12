@@ -1,0 +1,63 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Comic Sans MS', cursive;
+  background: linear-gradient(#ffafbd, #ffc3a0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.container {
+  text-align: center;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+input {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin: 15px 0;
+  font-size: 16px;
+}
+button {
+  padding: 10px 20px;
+  background: #ff7096;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+#gameCanvas {
+  display: none;
+  background: linear-gradient(#f9d29d, #ffb07c);
+  border: 3px solid #fff;
+  border-radius: 10px;
+}
+#finalMessage {
+  display: none;
+  position: relative;
+  height: 100vh;
+  background: #111;
+  color: white;
+  overflow: hidden;
+  padding: 20px;
+}
+.scroll-text {
+  position: absolute;
+  bottom: -100%;
+  width: 100%;
+  animation: scrollUp 30s linear forwards;
+  font-size: 20px;
+  white-space: pre-line;
+  text-align: center;
+}
+@keyframes scrollUp {
+  to { bottom: 100%; }
+}
+iframe {
+  margin-top: 20px;
+  border-radius: 12px;
+}
