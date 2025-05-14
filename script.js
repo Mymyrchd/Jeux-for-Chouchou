@@ -55,8 +55,8 @@ function gameLoop() {
   }
 
   // Gauche/Droite
-  if (keys["ArrowLeft"]) player.vx = -3;
-  else if (keys["ArrowRight"]) player.vx = 3;
+  if (keys["ArrowLeft"]) player.vx = -4;
+  else if (keys["ArrowRight"]) player.vx = 4;
   else player.vx = 0;
 
   // Mouvement
@@ -99,7 +99,7 @@ function gameLoop() {
   }
 
   // Difficulté
-  if (score % 100 === 0 && difficultyLevel < 10) difficultyLevel++;
+  if (score % 200 === 0 && difficultyLevel < 10) difficultyLevel++;
 
   // Gagner
   if (score >= 500) endGame(true);
@@ -134,7 +134,7 @@ function updateObstacles() {
       y: 270,
       width: 20 + Math.random() * 20,
       height: 30,
-      speed: 2 + difficultyLevel,
+      speed: 2 + difficultyLevel * 0.6,
     });
   }
 
