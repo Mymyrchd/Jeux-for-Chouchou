@@ -1,7 +1,7 @@
 body {
   font-family: 'Comic Sans MS', cursive;
   text-align: center;
-  background: linear-gradient(to top, #ff9966, #ff5e62); /* Couleur coucher de soleil */
+  background: linear-gradient(to top, #ff9966, #ff5e62); /* coucher de soleil */
   color: white;
   margin: 0;
   padding: 20px;
@@ -16,7 +16,7 @@ canvas {
 }
 
 #final-message {
-  max-height: 200px;
+  max-height: 300px;
   overflow: hidden;
   padding: 20px;
   background: white;
@@ -38,3 +38,20 @@ canvas {
     transform: translateY(-100%);
   }
 }
+
+#final-message button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #ff5e62;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+#final-message button:hover {
+  background-color: #ff8a65;
+}
+
