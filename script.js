@@ -128,7 +128,7 @@ function drawCharacter() {
 }
 
 function updateObstacles() {
-  if (Math.random() < 0.02 * difficultyLevel) {
+  if (Math.random() < 0.01 * difficultyLevel) {
     obstacles.push({
       x: canvas.width,
       y: 270,
