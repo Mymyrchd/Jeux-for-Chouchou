@@ -1,7 +1,19 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
 let playerName = "Stefan";
-let player = { x: 50, y: 250, width: 30, height: 30, color: "black", vy: 0, jump: -8, gravity: 0.4 };
+let player = {
+  x: 50,
+  y: 250,
+  width: 30,
+  height: 50,
+  vy: 0,
+  vx: 0,
+  jump: -9,
+  gravity: 0.5,
+  grounded: true,
+};
+
 let obstacles = [];
 let keys = {};
 let score = 0;
@@ -9,15 +21,17 @@ let gameInterval;
 let difficultyLevel = 1;
 
 function startGame() {
-  const inputName = document.getElementById("playerName").value;
-  if (inputName.trim()) playerName = inputName;
+  const nameInput = document.getElementById("playerName").value;
+  if (nameInput.trim()) playerName = nameInput;
 
   document.getElementById("final-message").classList.add("hidden");
   player.y = 250;
-  obstacles = [];
+  player.vy = 0;
   score = 0;
   difficultyLevel = 1;
+  obstacles = [];
 
+  clearInterval(gameInterval);
   gameInterval = setInterval(gameLoop, 1000 / 60);
 }
 
@@ -32,17 +46,33 @@ document.addEventListener("keyup", (e) => {
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Personnage
-  if (keys["Space"] && player.y >= 250) {
+  // Saut
+  if (keys["ArrowUp"] && player.grounded) {
     player.vy = player.jump;
+    player.grounded = false;
   }
+
+  // Gauche/Droite
+  if (keys["ArrowLeft"]) player.vx = -3;
+  else if (keys["ArrowRight"]) player.vx = 3;
+  else player.vx = 0;
+
+  // Mouvement
   player.vy += player.gravity;
   player.y += player.vy;
-  if (player.y > 250) player.y = 250;
+  player.x += player.vx;
 
-  ctx.fillStyle = player.color;
-  ctx.fillRect(player.x, player.y, player.width, player.height);
-  ctx.fillText(playerName, player.x - 5, player.y - 10);
+  if (player.y >= 250) {
+    player.y = 250;
+    player.vy = 0;
+    player.grounded = true;
+  }
+
+  if (player.x < 0) player.x = 0;
+  if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+  // Dessiner personnage
+  drawCharacter();
 
   // Obstacles
   updateObstacles();
@@ -50,8 +80,8 @@ function gameLoop() {
 
   // Score
   score++;
-  ctx.fillStyle = "white";
-  ctx.fillText("Score : " + score, 700, 20);
+  ctx.fillStyle = "black";
+  ctx.fillText("Score: " + score, 700, 20);
 
   // Collision
   for (let o of obstacles) {
@@ -62,17 +92,37 @@ function gameLoop() {
       player.y + player.height > o.y
     ) {
       endGame();
+      return;
     }
   }
 
-  // Augmenter la difficulté
-  if (score % 100 === 0 && difficultyLevel < 10) {
-    difficultyLevel++;
-  }
+  // Difficulté
+  if (score % 100 === 0 && difficultyLevel < 10) difficultyLevel++;
 
-  if (score >= 500) {
-    endGame(true);
-  }
+  // Gagner
+  if (score >= 500) endGame(true);
+}
+
+function drawCharacter() {
+  // Tête
+  ctx.fillStyle = "black";
+  ctx.fillRect(player.x, player.y, player.width, player.height);
+
+  // Lunettes
+  ctx.fillStyle = "white";
+  ctx.fillRect(player.x + 5, player.y + 10, 8, 8);
+  ctx.fillRect(player.x + 17, player.y + 10, 8, 8);
+  ctx.strokeStyle = "black";
+  ctx.strokeRect(player.x + 5, player.y + 10, 8, 8);
+  ctx.strokeRect(player.x + 17, player.y + 10, 8, 8);
+  ctx.beginPath();
+  ctx.moveTo(player.x + 13, player.y + 14);
+  ctx.lineTo(player.x + 17, player.y + 14);
+  ctx.stroke();
+
+  // Nom
+  ctx.fillStyle = "black";
+  ctx.fillText(playerName, player.x - 5, player.y - 10);
 }
 
 function updateObstacles() {
@@ -82,7 +132,7 @@ function updateObstacles() {
       y: 270,
       width: 20 + Math.random() * 20,
       height: 30,
-      speed: 2 + difficultyLevel
+      speed: 2 + difficultyLevel,
     });
   }
 
@@ -90,7 +140,7 @@ function updateObstacles() {
     obstacles[i].x -= obstacles[i].speed;
   }
 
-  obstacles = obstacles.filter(o => o.x + o.width > 0);
+  obstacles = obstacles.filter((o) => o.x + o.width > 0);
 }
 
 function drawObstacles() {
@@ -102,17 +152,18 @@ function drawObstacles() {
 
 function endGame(won = false) {
   clearInterval(gameInterval);
-  document.getElementById("final-message").classList.remove("hidden");
+  const messageBox = document.getElementById("final-message");
+  messageBox.classList.remove("hidden");
 
   if (won) {
-    document.getElementById("final-message").innerHTML = `
+    messageBox.innerHTML = `
       <p>
-        TOUTES MES FÉLICITATIONS ! 🎉 <br><br>
-        Coucou mon Stefan, j'espère que tu as aimé ce petit jeu 😊<br>
-        Bon, ce que j'ai fait n'est pas ouf mais voilà 😅<br>
-        J'espère que ça t'a plu ! Je voulais te montrer de quoi j'étais capable 😎😂<br>
-        Après pour le mini-jeu, c'est pas le meilleur 😅<br>
-        En espérant que tu as apprécié 😘<br><br>
+        TOUTES MES FÉLICITATIONS ! 🎉<br /><br />
+        Coucou mon Stefan, j'espère que tu as aimé ce petit jeu 😊<br />
+        Bon, ce que j'ai fait n'est pas ouf mais voilà 😅<br />
+        J'espère que ça t'a plu ! Je voulais te montrer de quoi j'étais capable 😎😂<br />
+        Après pour le mini-jeu, c'est pas le meilleur 😅<br />
+        En espérant que tu as apprécié 😘<br /><br />
         GROS BISOUS, TA Mymy ! ❤️
       </p>`;
   }
