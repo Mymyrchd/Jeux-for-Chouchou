@@ -25,6 +25,8 @@ function startGame() {
   if (nameInput.trim()) playerName = nameInput;
 
   document.getElementById("final-message").classList.add("hidden");
+  canvas.style.display = "block";
+
   player.y = 250;
   player.vy = 0;
   score = 0;
@@ -91,7 +93,7 @@ function gameLoop() {
       player.y < o.y + o.height &&
       player.y + player.height > o.y
     ) {
-      endGame();
+      endGame(false);
       return;
     }
   }
@@ -152,7 +154,13 @@ function drawObstacles() {
 
 function endGame(won = false) {
   clearInterval(gameInterval);
+  const canvas = document.getElementById("gameCanvas");
   const messageBox = document.getElementById("final-message");
+
+  // Cacher le jeu
+  canvas.style.display = "none";
+
+  // Afficher le message de fin
   messageBox.classList.remove("hidden");
 
   if (won) {
@@ -165,6 +173,16 @@ function endGame(won = false) {
         Après pour le mini-jeu, c'est pas le meilleur 😅<br />
         En espérant que tu as apprécié 😘<br /><br />
         GROS BISOUS, TA Mymy ! ❤️
-      </p>`;
+      </p>
+      <button onclick="startGame()">Rejouer</button>
+    `;
+  } else {
+    messageBox.innerHTML = `
+      <p>
+        Oups 😅 Tu as perdu !<br /><br />
+        Tu veux recommencer ? 😇
+      </p>
+      <button onclick="startGame()">Rejouer</button>
+    `;
   }
 }
